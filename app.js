@@ -98,49 +98,72 @@ const logo = (o) => `<div class="logo" style="background:${o.c}">${o.l}</div>`;
 /* Pages */
 const pages = {
   home(){
-    return `<div class="page">
-      <div class="hello">
-        <a class="avatar" href="#/profile">م</a>
-        <div class="t"><small>سلام، وقت بخیر 👋</small><b>مهدی مجیدزاده</b></div>
+    const prod=(p)=>`<a class="card prod" href="${link(p.n)}">
+        <div class="pimg" style="background:linear-gradient(135deg,${p.g})">${ic(p.i)}${p.d?`<span class="disc">${fa(p.d)}٪</span>`:''}</div>
+        <div class="pn">${p.n}</div>
+        <div class="pp">${p.d?`<s>${money(Math.round(p.p/(1-p.d/100)/1000)*1000)}</s>`:''}<b>${money(p.p)}</b><small>تومان</small></div>
+        <div class="pi">${ic('card',13)} قسطی از ${money(Math.round(p.p/4/1000)*1000)}</div>
+      </a>`;
+    const slides=[
+      ['جشنواره زمستانه','تا ۴۰٪ تخفیف + ۴ قسط بدون کارمزد','#0099d6,#5a3fd1','gift'],
+      ['موبایل و لپ‌تاپ','قسطی بخر، ماه بعد شروع کن پرداخت','#ef394e,#f79009','phone'],
+      ['سفر بدون نگرانی','بلیط و هتل با اعتبار اسنپ‌پی','#12b76a,#0099d6','plane'],
+    ];
+    const short=[['مد','shirt'],['دیجیتال','laptop'],['خانه','sofa'],['رستوران','food'],['سفر','plane'],['سلامت','heartpulse'],['کودک','baby'],['همه','grid']];
+    const P1=[
+      {n:'گوشی موبایل سامسونگ A55',p:21900000,d:12,g:'#2d6cdf,#6a47d6',i:'phone'},
+      {n:'هدفون بی‌سیم بلوتوثی',p:1890000,d:30,g:'#6a47d6,#d6247f',i:'phone'},
+      {n:'لپ‌تاپ ایسوس ۱۵ اینچ',p:48500000,d:8,g:'#1b2430,#5b6675',i:'laptop'},
+      {n:'کفش ورزشی مردانه',p:2150000,d:25,g:'#d6247f,#f5a300',i:'shirt'},
+      {n:'ساعت هوشمند',p:5400000,d:15,g:'#12b76a,#0099d6',i:'clock'},
+    ];
+    const P2=[
+      {n:'جاروبرقی هوشمند رباتیک',p:12900000,g:'#e07b00,#d6314f',i:'home'},
+      {n:'مبل راحتی ۳ نفره',p:18700000,d:10,g:'#8a6a2a,#c9a45c',i:'sofa'},
+      {n:'کتاب مجموعه داستان',p:480000,g:'#1f7a55,#12b76a',i:'book'},
+      {n:'ست لگو کودک',p:1350000,d:20,g:'#f5a300,#ef394e',i:'baby'},
+      {n:'پک مراقبت پوست',p:2750000,d:18,g:'#d6247f,#f79009',i:'heartpulse'},
+      {n:'بلیط تهران–مشهد',p:4800000,g:'#0099d6,#12b76a',i:'plane'},
+    ];
+    return `<div class="page home">
+      <header class="dk-head">
+        <a class="dk-logo" href="#/home">اسنپ‌پی</a>
+        <a class="dk-search" href="${link('جستجو')}">${ic('search')}<span>جستجو در میان میلیون‌ها کالا</span></a>
         <a class="icon-btn" href="${link('اعلان‌ها')}" aria-label="اعلان‌ها">${ic('bell')}<i class="dot"></i></a>
-      </div>
-      <a class="search" href="${link('جستجوی فروشگاه‌ها و کالاها')}">${ic('search')}<span>جستجوی فروشگاه یا کالا…</span></a>
+      </header>
+      <div class="dk-tabs">${['همه','موبایل','مد و پوشاک','لوازم خانگی','کالای دیجیتال','سفر','خوراک'].map((t,i)=>`<a class="${i?'':'on'}" href="${i?link(t):'#/home'}">${t}</a>`).join('')}</div>
 
-      <a class="credit-card" href="#/credit">
-        <small>اعتبار قابل استفاده</small>
-        <div class="amt">${money(18500000)}<span>تومان</span></div>
-        <div class="bar"><i style="width:62%"></i></div>
-        <div class="row"><span>اعتبار کل: ${money(30000000)} تومان</span><span>۶۲٪ آزاد</span></div>
+      <div class="sec" style="margin-top:10px"><div class="hero" id="hero">
+        ${slides.map(s=>`<a class="slide" href="${link(s[0])}" style="background:linear-gradient(120deg,${s[2]})">
+          <div><b>${s[0]}</b><span>${s[1]}</span><em>مشاهده</em></div>${ic(s[3],84)}</a>`).join('')}
+      </div><div class="dots" id="dots">${slides.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div></div>
+
+      <a class="credit-strip" href="#/credit">
+        <span class="ic">${ic('wallet')}</span>
+        <span class="t"><small>اعتبار قابل استفاده شما</small><b>${money(18500000)} تومان</b></span>
+        <em>اعتبار من ${ic('left',14)}</em>
       </a>
 
-      <div class="sec"><div class="quick">
-        <a class="q" href="${link('اسکن QR')}"><span class="ic">${ic('qr')}</span>اسکن QR</a>
-        <a class="q" href="${link('خرید حضوری')}"><span class="ic">${ic('pin')}</span>خرید حضوری</a>
-        <a class="q" href="${link('پرداخت قسط')}"><span class="ic">${ic('card')}</span>پرداخت قسط</a>
-        <a class="q" href="${link('هدیه و تخفیف')}"><span class="ic">${ic('gift')}</span>تخفیف‌ها</a>
-      </div></div>
+      <div class="shorts">${short.map(c=>`<a href="${c[0]==='همه'?'#/categories':link(c[0])}"><span>${ic(c[1])}</span>${c[0]}</a>`).join('')}</div>
 
-      <div class="sec"><a class="banner" href="${link('افزایش اعتبار')}">
-        <span class="ic">${ic('sparkle')}</span>
-        <span style="flex:1"><b>اعتبارت رو بیشتر کن!</b><span>با تکمیل مدارک تا ۵۰ میلیون تومان</span></span>
-        ${ic('left',18)}
-      </a></div>
-
-      <div class="sec"><div class="sec-h"><h2>فروشگاه‌های پرطرفدار</h2><a href="#/categories">همه ${ic('left')}</a></div>
-        <div class="hscroll">${STORES.map(s=>`
-          <a class="card store" href="${link(s.n)}">${logo(s)}<b>${s.n}</b><small>${s.d}</small></a>`).join('')}
-        </div>
+      <div class="amazing">
+        <div class="am-h"><div class="am-t"><b>شگفت‌انگیز</b><span>اسنپ‌پی</span></div>
+          <div class="cd" id="cd"><i>۰۰</i>:<i>۰۰</i>:<i>۰۰</i></div>
+          <a href="${link('پیشنهاد شگفت‌انگیز')}">مشاهده همه ${ic('left',14)}</a></div>
+        <div class="hscroll">${P1.map(prod).join('')}</div>
       </div>
 
-      <div class="sec"><div class="sec-h"><h2>پیشنهادهای ویژه</h2><a href="${link('پیشنهادهای ویژه')}">بیشتر ${ic('left')}</a></div>
-        <div class="offers">${OFFERS.map(o=>`
-          <a class="card offer" href="${link(o.n)}">
-            <div class="img" style="background:linear-gradient(135deg,${o.g})">${ic(o.i)}</div>
-            <b>${o.n}</b><small>${o.s}</small>
-            <div class="price">${money(o.p)} <small>تومان</small></div>
-            <small style="color:var(--primary)">قسطی از ${money(Math.round(o.p/6/1000)*1000)}</small>
-          </a>`).join('')}
-        </div>
+      <div class="sec"><div class="pair">
+        <a style="background:linear-gradient(135deg,#7a5af8,#5a3fd1)" href="${link('خرید در ۴ قسط')}"><b>پرداخت در ۴ قسط</b><span>بدون کارمزد</span>${ic('percent',54)}</a>
+        <a style="background:linear-gradient(135deg,#f79009,#d4650a)" href="${link('کش‌بک')}"><b>۱۰٪ بازگشت وجه</b><span>برای اولین خرید</span>${ic('gift',54)}</a>
+      </div></div>
+
+      <div class="sec"><div class="sec-h"><h2>فروشگاه‌های پرطرفدار</h2><a href="#/categories">همه ${ic('left')}</a></div>
+        <div class="hscroll">${STORES.map(s=>`<a class="brand" href="${link(s.n)}">${logo(s)}<b>${s.n}</b><small>${s.d}</small></a>`).join('')}</div>
+      </div>
+
+      <div class="sec"><div class="sec-h"><h2>پیشنهاد برای شما</h2><a href="${link('پیشنهاد برای شما')}">بیشتر ${ic('left')}</a></div>
+        <div class="pgrid">${P2.map(prod).join('')}</div>
       </div>
     </div>`;
   },
@@ -272,6 +295,24 @@ function render(){
     tabbar.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===r));
   }
   screen.scrollTop=0;
+  startHome();
+}
+let cdT,heroT;
+function startHome(){
+  clearInterval(cdT);clearInterval(heroT);
+  const cd=document.getElementById('cd'),hero=document.getElementById('hero');
+  if(cd){
+    let left=5*3600+23*60+41;
+    const tick=()=>{const h=Math.floor(left/3600),m=Math.floor(left%3600/60),x=left%60;
+      cd.innerHTML=[h,m,x].map(v=>`<i>${fa(String(v).padStart(2,'0'))}</i>`).join(':');left=left>0?left-1:5*3600;};
+    tick();cdT=setInterval(tick,1000);
+  }
+  if(hero){
+    const dots=[...document.querySelectorAll('#dots i')];
+    const idx=()=>Math.round(Math.abs(hero.scrollLeft)/hero.clientWidth);
+    hero.addEventListener('scroll',()=>dots.forEach((d,i)=>d.classList.toggle('on',i===idx())),{passive:true});
+    heroT=setInterval(()=>{const n=(idx()+1)%dots.length;hero.scrollTo({left:-n*hero.clientWidth,behavior:'smooth'})},4000);
+  }
 }
 screen.addEventListener('click',e=>{
   const t=e.target.closest('[data-toggle]');
