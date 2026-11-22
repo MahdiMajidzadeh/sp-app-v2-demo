@@ -153,20 +153,32 @@ const pages = {
   },
 
   credit(){
-    const C=2*Math.PI*65, used=0.38;
+    const CR=[
+      {k:'monthly',n:'اعتبار ماهانه',ic:'cal',rem:6200000,tot:10000000,g:'#00a6e6,#0073b0',c:'#0073b0',sub:'تمدید در ۱۵ آذر',
+       m:[['clock','اقساط ماه جاری'],['doc','صورتحساب ماهانه'],['plus','افزایش سقف ماهانه']]},
+      {k:'payx',n:'اعتبار پرداخت در ۴ قسط',ic:'percent',rem:8300000,tot:12000000,g:'#7a5af8,#5a3fd1',c:'#5a3fd1',sub:'بدون کارمزد',
+       m:[['clock','اقساط پیش رو'],['store','فروشگاه‌های مجاز'],['doc','تاریخچه خرید']]},
+      {k:'wallet',n:'کیف پول',ic:'wallet',rem:4000000,tot:null,g:'#12b76a,#0b8a50',c:'#0b8a50',sub:'موجودی نقدی',
+       m:[['plus','افزایش موجودی'],['card','برداشت به حساب'],['doc','تراکنش‌های کیف پول']]},
+      {k:'card',n:'کارت اعتباری',ic:'card',rem:2100000,tot:8000000,g:'#f79009,#d4650a',c:'#d4650a',sub:'کارت ‎•••• ۴۲۱۸',
+       m:[['shield','رمز و امنیت کارت'],['pin','محل‌های پذیرش'],['doc','صورتحساب کارت']]},
+    ];
     return `<div class="page">${appbar('اعتبار من',{actions:`<a class="icon-btn" href="${link('راهنمای اعتبار')}">${ic('help')}</a>`})}
       <div class="sec" style="margin-top:4px">
-        <div class="card big">
-          <div class="ring">
-            <svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="65" stroke="#eef0f3"/>
-              <circle cx="75" cy="75" r="65" stroke="var(--primary)" stroke-dasharray="${C}" stroke-dashoffset="${C*used}"/></svg>
-            <div class="c"><small>قابل استفاده</small><b>${money(18500000)}</b><small>تومان</small></div>
-          </div>
-          <a class="btn" href="${link('افزایش اعتبار')}">${ic('plus',18)} افزایش اعتبار</a>
-        </div>
-        <div class="stats">
-          <div class="card stat"><small>اعتبار کل</small><b>${money(30000000)}</b></div>
-          <div class="card stat"><small>استفاده‌شده</small><b>${money(11500000)}</b></div>
+        <div class="cwrap-list">${CR.map(c=>`
+          <div class="cwrap" style="--cc:${c.c}">
+            <button class="ccard" data-toggle style="background:linear-gradient(135deg,${c.g})" aria-expanded="false">
+              <span class="cc-top"><span class="cc-ic">${ic(c.ic)}</span><span class="cc-n">${c.n}</span>
+                <span class="cc-chev">${ic('left',18)}</span></span>
+              <span class="cc-l">${c.tot?'مانده اعتبار':'موجودی'}</span>
+              <span class="cc-a">${money(c.rem)}<small>تومان</small></span>
+              ${c.tot?`<span class="bar"><i style="width:${Math.round(c.rem/c.tot*100)}%"></i></span>`:''}
+              <span class="cc-s">${c.sub}${c.tot?` · از ${money(c.tot)}`:''}</span>
+            </button>
+            <div class="drawer"><div class="drawer-in"><div class="drawer-pad">
+              ${c.m.map(x=>`<a class="d-item" href="${link(x[1])}"><span>${ic(x[0])}</span>${x[1]}<em>${ic('left',16)}</em></a>`).join('')}
+            </div></div></div>
+          </div>`).join('')}
         </div>
       </div>
 
@@ -262,6 +274,13 @@ function render(){
   screen.scrollTop=0;
 }
 screen.addEventListener('click',e=>{
+  const t=e.target.closest('[data-toggle]');
+  if(t){
+    const w=t.parentElement, open=!w.classList.contains('open');
+    screen.querySelectorAll('.cwrap.open').forEach(x=>{x.classList.remove('open');x.firstElementChild.setAttribute('aria-expanded','false')});
+    if(open){w.classList.add('open');t.setAttribute('aria-expanded','true')}
+    return;
+  }
   const c=e.target.closest('[data-filter]');
   if(!c)return;
   const y=screen.scrollTop; ordersFilter=c.dataset.filter; render(); screen.scrollTop=y;

@@ -153,3 +153,32 @@ svg{display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:
 .empty .ic{width:84px;height:84px;border-radius:28px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--ink-3);margin-bottom:6px}
 .empty .ic svg{width:38px;height:38px;stroke-width:1.4}
 .empty b{color:var(--ink);font-size:16px}
+
+/* Credit cards with drawer revealing from behind */
+.cwrap-list{display:flex;flex-direction:column;gap:12px}
+.cwrap{position:relative}
+.ccard{position:relative;z-index:2;width:100%;text-align:start;color:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:2px;overflow:hidden;box-shadow:0 6px 16px -8px var(--cc)}
+.ccard::before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.1);inset-inline-start:-50px;top:-70px}
+.ccard>*{position:relative}
+.cc-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cc-ic{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.cc-ic svg{width:18px;height:18px}
+.cc-n{flex:1;font-weight:700;font-size:14px}
+.cc-chev svg{transition:transform .3s}
+.cwrap.open .cc-chev svg{transform:rotate(-90deg)}
+.cc-l{font-size:12px;opacity:.85}
+.cc-a{font-size:24px;font-weight:700;line-height:1.5}
+.cc-a small{font-size:12px;font-weight:500;margin-inline-start:6px;opacity:.9}
+.ccard .bar{margin:4px 0 6px}
+.cc-s{font-size:11.5px;opacity:.85}
+.drawer{display:grid;grid-template-rows:0fr;margin-top:0;transition:grid-template-rows .35s cubic-bezier(.3,.8,.3,1),margin-top .35s}
+.cwrap.open .drawer{grid-template-rows:1fr;margin-top:-22px}
+.drawer-in{overflow:hidden;min-height:0}
+.drawer-pad{padding:30px 8px 8px;background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 20px 20px;
+  transform:translateY(-100%);transition:transform .35s cubic-bezier(.3,.8,.3,1)}
+.cwrap.open .drawer-pad{transform:none}
+.d-item{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;font-size:13.5px}
+.d-item:active{background:var(--bg)}
+.d-item span{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 12%,#fff);color:var(--cc)}
+.d-item span svg{width:17px;height:17px}
+.d-item em{margin-inline-start:auto;color:var(--ink-3)}
