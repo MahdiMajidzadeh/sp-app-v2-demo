@@ -365,3 +365,18 @@ svg{display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:
 .done .ic{width:68px;height:68px;border-radius:50%;background:#e7f8f0;color:var(--ok);display:grid;place-items:center;margin-bottom:6px}
 .done .ic svg{stroke-width:2.6}
 .done p{color:var(--ink-2);font-size:13px;margin-bottom:14px}
+
+/* In-store barcode payment */
+.bc-page{height:100%;display:flex;flex-direction:column;padding-bottom:0;background:#fff}
+.bc-page .appbar{background:#fff}
+.bc-in{flex:1;display:flex;flex-direction:column;padding:16px 20px 28px}
+.bc-in h2{font-size:17px;font-weight:700;margin-bottom:8px}
+.bc-in p{color:var(--ink-2);font-size:13.5px;line-height:1.9}
+.bc-warn{display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px 14px;border-radius:14px;background:#fdf8ea;color:#7a5b12;font-size:12.5px;line-height:1.8}
+.bc-warn svg{flex-shrink:0;color:#a07c1c}
+.bc-code{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:180px}
+.bc-code svg{width:230px;height:88px;fill:#000;stroke:none;display:block}
+.bc-num{font-size:17px;letter-spacing:4px;color:var(--ink);direction:ltr}
+.bc-timer{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--ink-2);font-size:13px}
+.bc-timer i{--p:100%;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--primary) var(--p),#e4ebf2 0);transition:background .3s}
+.bc-timer b{font-weight:500;direction:ltr;display:inline-block}

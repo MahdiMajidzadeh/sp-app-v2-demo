@@ -8,6 +8,7 @@ const P = {
   search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
   left:'<path d="m15 18-6-6 6-6"/>', check:'<path d="M20 6 9 17l-5-5"/>', down:'<path d="m6 9 6 6 6-6"/>', right:'<path d="m9 18 6-6-6-6"/>',
+  barcode:'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10 8v8M13 8v8M17 8v8"/>',
   qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/>',
   store:'<path d="M3 9 5 3h14l2 6"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v9h14v-9"/>',
   gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
@@ -139,7 +140,7 @@ const pages = {
       <header class="dk-head">
         <a class="dk-logo" href="#/home">اسنپ‌پی</a>
         <a class="dk-search" href="${link('جستجو')}">${ic('search')}<span>جستجو در میان میلیون‌ها کالا</span></a>
-        <a class="icon-btn" href="${link('اعلان‌ها')}" aria-label="اعلان‌ها">${ic('bell')}<i class="dot"></i></a>
+        <a class="icon-btn" href="#/barcode" aria-label="پرداخت حضوری با بارکد">${ic('barcode')}</a>
       </header>
       <div class="dk-tabs">${['همه','موبایل','مد و پوشاک','لوازم خانگی','کالای دیجیتال','سفر','خوراک'].map((t,i)=>`<a class="${i?'':'on'}" href="${i?link(t):'#/home'}">${t}</a>`).join('')}</div>
 
@@ -277,6 +278,17 @@ const pages = {
     </div>`;
   },
 
+  barcode(){
+    return `<div class="page bc-page">${appbar('پرداخت حضوری',{back:true})}
+      <div class="bc-in">
+        <h2>این بارکد را به صندوقدار نشان دهید</h2>
+        <p>با اسکن بارکد زیر به‌دست صندوقدار، هزینهٔ خریدتان با اعتبار اسنپ‌پی پرداخت می‌شود.</p>
+        <div class="bc-warn">${ic('info',22)}<span>توجه داشته باشید بارکد را به جز صندوقدار در اختیار شخص دیگری قرار ندهید.</span></div>
+        <div class="bc-code"><svg id="bc-svg" aria-label="بارکد پرداخت"></svg><div class="bc-num" id="bc-num"></div></div>
+        <div class="bc-timer"><i id="bc-pie"></i><span><b id="bc-left"></b> تا ایجاد بارکد جدید</span></div>
+      </div></div>`;
+  },
+
   empty(title){
     return `<div class="page">${appbar(title,{back:true})}
       <div class="empty"><div class="ic">${ic('sparkle')}</div><b>به‌زودی</b>
@@ -297,6 +309,9 @@ function render(){
   if(route==='p'){
     phone.classList.add('hide-tabs');
     screen.innerHTML=pages.empty(decodeURIComponent(parts.slice(1).join('/')));
+  }else if(route==='barcode'){
+    phone.classList.add('hide-tabs');
+    screen.innerHTML=pages.barcode();
   }else if(route==='order'){
     phone.classList.add('hide-tabs');
     screen.innerHTML=orderDetail(parts[1]);
@@ -309,9 +324,35 @@ function render(){
   screen.scrollTop=0;
   startHome();
 }
-let cdT,heroT;
+let cdT,heroT,bcT;
+const BC_TTL=180;
+function newCode(){ return String(Math.floor(10000000+Math.random()*90000000)); }
+/* Draws a Code 128-style pattern from the digits (visual only, not a scannable encoding) */
+function drawBarcode(code){
+  const W=['212222','222122','222221','121223','121322','131222','122213','122312','132212','221213'];
+  let pat='211214';                        // start
+  for(const d of code) pat+=W[+d];
+  pat+='2331112';                          // stop
+  let x=0,bars='';
+  [...pat].forEach((w,i)=>{ w=+w; if(i%2===0) bars+=`<rect x="${x}" y="0" width="${w}" height="60"/>`; x+=w; });
+  const svg=document.getElementById('bc-svg');
+  svg.setAttribute('viewBox',`0 0 ${x} 60`); svg.setAttribute('preserveAspectRatio','none'); svg.innerHTML=bars;
+  document.getElementById('bc-num').textContent=fa(code);
+}
+function startBarcode(){
+  if(!document.getElementById('bc-svg')) return;
+  let left=BC_TTL; drawBarcode(newCode());
+  const tick=()=>{
+    if(left<=0){ left=BC_TTL; drawBarcode(newCode()); }
+    document.getElementById('bc-left').textContent=fa(`${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`);
+    document.getElementById('bc-pie').style.setProperty('--p',(left/BC_TTL*100)+'%');
+    left--;
+  };
+  tick(); bcT=setInterval(tick,1000);
+}
 function startHome(){
-  clearInterval(cdT);clearInterval(heroT);
+  clearInterval(cdT);clearInterval(heroT);clearInterval(bcT);
+  startBarcode();
   const cd=document.getElementById('cd'),hero=document.getElementById('hero');
   if(cd){
     let left=5*3600+23*60+41;
