@@ -238,3 +238,28 @@ svg{display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:
 .brand .logo{width:64px;height:64px;border-radius:50%;margin-bottom:6px;font-size:22px}
 .brand b{display:block;font-size:12.5px}.brand small{color:var(--ok);font-size:11px}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Categories: tabs + master/detail */
+.catpage{height:100%;display:flex;flex-direction:column;padding-bottom:0}
+.catpage .appbar{position:static;padding-bottom:6px}
+.ctabs{display:flex;gap:6px;margin:0 16px 10px;padding:4px;background:#e9edf2;border-radius:14px;flex-shrink:0}
+.ctabs button{flex:1;height:34px;border-radius:10px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;transition:all .2s}
+.ctabs button.on{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(20,30,50,.1)}
+.split{flex:1;min-height:0;display:flex;background:#fff;border-top:1px solid var(--line)}
+.mains{width:96px;flex-shrink:0;overflow-y:auto;background:var(--bg);border-inline-end:1px solid var(--line);scrollbar-width:none}
+.mains::-webkit-scrollbar{display:none}
+.mains button{width:100%;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;font-size:11.5px;line-height:1.5;color:var(--ink-2);text-align:center;position:relative}
+.mains button span{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:var(--ink-3)}
+.mains button span svg{width:20px;height:20px}
+.mains button.on{background:#fff;color:var(--ink);font-weight:700}
+.mains button.on span{background:var(--primary-50);color:var(--primary)}
+.mains button.on::before{content:"";position:absolute;inset-inline-start:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--primary)}
+.subs{flex:1;min-width:0;overflow-y:auto;padding:14px 12px 24px;scrollbar-width:none;animation:fade .2s ease}
+.subs::-webkit-scrollbar{display:none}
+.subs-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.subs-h b{font-size:14.5px}
+.subs-h span{font-size:12px;color:var(--primary);display:flex;align-items:center;gap:2px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 6px}
+.sub{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:11.5px;line-height:1.5}
+.sub span{width:54px;height:54px;border-radius:18px;display:grid;place-items:center}
+.sub span svg{width:26px;height:26px}

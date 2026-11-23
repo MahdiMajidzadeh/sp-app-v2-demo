@@ -61,14 +61,6 @@ const STORES = [
   {n:'دیوار',c:'#a62626',l:'د',d:'تا ۱۲ قسط'},
   {n:'تکنولایف',c:'#2d6cdf',l:'ت',d:'تا ۱۸ قسط'},
 ];
-const CATS = [
-  ['کالای دیجیتال','laptop','#e6f1ff','#2d6cdf'],['مد و پوشاک','shirt','#fde8f3','#d6247f'],
-  ['خوراک و رستوران','food','#fff1e0','#e07b00'],['لوازم خانگی','home','#e7f8f0','#0b8a50'],
-  ['سفر و گردشگری','plane','#e6f5fb','#0099d6'],['خودرو','car','#eee9ff','#6a47d6'],
-  ['سلامت و زیبایی','heartpulse','#fdebea','#d63a2e'],['مبلمان و دکوراسیون','sofa','#f3efe6','#8a6a2a'],
-  ['کتاب و آموزش','book','#e8f4ee','#1f7a55'],['کودک و نوزاد','baby','#fff5d9','#b58300'],
-  ['هدیه و مناسبت','gift','#fde8ec','#d6314f'],['سایر','more','#eef0f3','#5b6675'],
-];
 const OFFERS = [
   {n:'هدفون بی‌سیم',s:'دیجی‌کالا',p:3490000,g:'#2d6cdf,#6a47d6',i:'phone'},
   {n:'کفش ورزشی',s:'مد و پوشاک',p:2150000,g:'#d6247f,#f5a300',i:'shirt'},
@@ -82,6 +74,31 @@ const ORDERS = [
   {id:'SP-46555',s:'تکنولایف',c:'#2d6cdf',l:'ت',t:'۱۴۰۴/۰۷/۰۹',a:21900000,st:['تسویه شده','ok'],f:'done',paid:'۱۲ از ۱۲ قسط'},
   {id:'SP-46010',s:'دیوار',c:'#a62626',l:'د',t:'۱۴۰۴/۰۶/۱۵',a:1200000,st:['لغو شده','err'],f:'canceled',paid:'—'},
 ];
+
+
+/* Category tree per tab: n=name, i=icon, c=[bg,fg], s=subcategories */
+const CD={
+  digital:{n:'کالای دیجیتال',i:'laptop',c:['#e6f1ff','#2d6cdf'],s:['موبایل','لپ‌تاپ','تبلت','هدفون و هندزفری','ساعت هوشمند','دوربین','کنسول بازی','لوازم جانبی','شارژر و پاوربانک']},
+  fashion:{n:'مد و پوشاک',i:'shirt',c:['#fde8f3','#d6247f'],s:['لباس زنانه','لباس مردانه','کفش','کیف و کوله','اکسسوری','ساعت و عینک','لباس ورزشی','پوشاک بچگانه']},
+  home:{n:'لوازم خانگی',i:'home',c:['#e7f8f0','#0b8a50'],s:['یخچال و فریزر','ماشین لباسشویی','جاروبرقی','لوازم آشپزخانه','تهویه و گرمایش','ظروف','لوازم برقی کوچک']},
+  furn:{n:'مبلمان و دکور',i:'sofa',c:['#f3efe6','#8a6a2a'],s:['مبل و صندلی','تخت و تشک','میز و کمد','روشنایی','فرش و موکت','پرده','تابلو و دکوراسیون']},
+  travel:{n:'سفر و گردشگری',i:'plane',c:['#e6f5fb','#0099d6'],s:['بلیط هواپیما','بلیط قطار','بلیط اتوبوس','هتل و اقامتگاه','تور','ویلا و سوئیت']},
+  food:{n:'خوراک و رستوران',i:'food',c:['#fff1e0','#e07b00'],s:['فست‌فود','رستوران ایرانی','کافه','شیرینی و کیک','سوپرمارکت','نان و پیتزا']},
+  health:{n:'سلامت و زیبایی',i:'heartpulse',c:['#fdebea','#d63a2e'],s:['آرایش','مراقبت پوست','عطر','داروخانه','سالن زیبایی','باشگاه و ورزش','دندانپزشکی']},
+  car:{n:'خودرو',i:'car',c:['#eee9ff','#6a47d6'],s:['لوازم یدکی','لاستیک','خدمات و تعمیرات','لوازم جانبی','کارواش','بیمه']},
+  kids:{n:'کودک و نوزاد',i:'baby',c:['#fff5d9','#b58300'],s:['اسباب‌بازی','لباس نوزاد','کالسکه و صندلی','لوازم تغذیه','بازی و سرگرمی']},
+  book:{n:'کتاب و آموزش',i:'book',c:['#e8f4ee','#1f7a55'],s:['کتاب','لوازم تحریر','دوره آنلاین','کلاس حضوری','زبان خارجه']},
+  gift:{n:'هدیه و مناسبت',i:'gift',c:['#fde8ec','#d6314f'],s:['گل و گیاه','هدیه شرکتی','کارت هدیه','هدیه ولنتاین','پک مهمانی']},
+  craft:{n:'صنایع دستی',i:'sparkle',c:['#fff0f5','#c2185b'],s:['جواهرات و بدلیجات','سفال و سرامیک','معرق و خاتم','زیورآلات دست‌ساز']},
+};
+const pick=(...k)=>k.map(x=>CD[x]);
+const CATTREE={
+  all:pick('digital','fashion','home','furn','travel','food','health','car','kids','book','gift'),
+  online:pick('digital','fashion','home','travel','kids','book','gift'),
+  store:pick('food','health','car','fashion','furn','kids'),
+  social:pick('fashion','health','craft','kids','gift'),
+};
+let catTab='all',catMain=0;
 
 /* helpers */
 const link = (title) => `#/p/${encodeURIComponent(title)}`;
@@ -169,9 +186,20 @@ const pages = {
   },
 
   categories(){
-    return `<div class="page">${appbar('دسته‌بندی‌ها',{actions:`<a class="icon-btn" href="${link('جستجو')}">${ic('search')}</a>`})}
-      <div class="cats">${CATS.map(c=>`
-        <a class="card cat" href="${link(c[0])}"><span class="ic" style="background:${c[2]};color:${c[3]}">${ic(c[1])}</span>${c[0]}</a>`).join('')}
+    const tabs=[['all','همه'],['online','آنلاین'],['store','حضوری'],['social','شبکه‌های اجتماعی']];
+    const list=CATTREE[catTab]; if(catMain>=list.length) catMain=0;
+    const cur=list[catMain];
+    return `<div class="page catpage">
+      ${appbar('دسته‌بندی‌ها',{actions:`<a class="icon-btn" href="${link('جستجو')}">${ic('search')}</a>`})}
+      <div class="ctabs">${tabs.map(t=>`<button class="${t[0]===catTab?'on':''}" data-ctab="${t[0]}">${t[1]}</button>`).join('')}</div>
+      <div class="split">
+        <aside class="mains">${list.map((m,i)=>`
+          <button class="${i===catMain?'on':''}" data-cmain="${i}"><span>${ic(m.i)}</span>${m.n}</button>`).join('')}</aside>
+        <section class="subs" key="${catTab}-${catMain}">
+          <a class="subs-h" href="${link('همه '+cur.n)}"><b>${cur.n}</b><span>مشاهده همه ${ic('left',14)}</span></a>
+          <div class="sgrid">${cur.s.map((x,i)=>`
+            <a class="sub" href="${link(x)}"><span style="background:${cur.c[0]};color:${cur.c[1]}">${ic(cur.i)}</span>${x}</a>`).join('')}</div>
+        </section>
       </div></div>`;
   },
 
@@ -322,6 +350,9 @@ screen.addEventListener('click',e=>{
     if(open){w.classList.add('open');t.setAttribute('aria-expanded','true')}
     return;
   }
+  const ct=e.target.closest('[data-ctab]'), cm=e.target.closest('[data-cmain]');
+  if(ct){catTab=ct.dataset.ctab;catMain=0;render();return}
+  if(cm){catMain=+cm.dataset.cmain;render();return}
   const c=e.target.closest('[data-filter]');
   if(!c)return;
   const y=screen.scrollTop; ordersFilter=c.dataset.filter; render(); screen.scrollTop=y;
