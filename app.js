@@ -7,7 +7,7 @@ const P = {
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
-  left:'<path d="m15 18-6-6 6-6"/>', right:'<path d="m9 18 6-6-6-6"/>',
+  left:'<path d="m15 18-6-6 6-6"/>', check:'<path d="M20 6 9 17l-5-5"/>', down:'<path d="m6 9 6 6 6-6"/>', right:'<path d="m9 18 6-6-6-6"/>',
   qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h3M20 17v4"/>',
   store:'<path d="M3 9 5 3h14l2 6"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v9h14v-9"/>',
   gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
@@ -66,13 +66,6 @@ const OFFERS = [
   {n:'کفش ورزشی',s:'مد و پوشاک',p:2150000,g:'#d6247f,#f5a300',i:'shirt'},
   {n:'بلیط تهران–مشهد',s:'علی‌بابا',p:4800000,g:'#0099d6,#12b76a',i:'plane'},
   {n:'جاروبرقی هوشمند',s:'لوازم خانگی',p:12900000,g:'#e07b00,#d6314f',i:'home'},
-];
-const ORDERS = [
-  {id:'SP-48213',s:'دیجی‌کالا',c:'#ef394e',l:'د',t:'۱۴۰۴/۰۸/۲۱',a:8450000,st:['در حال پرداخت اقساط','info'],f:'active',paid:'۲ از ۶ قسط'},
-  {id:'SP-47790',s:'علی‌بابا',c:'#f5a300',l:'ع',t:'۱۴۰۴/۰۸/۱۲',a:4800000,st:['اقساط جاری','info'],f:'active',paid:'۱ از ۳ قسط'},
-  {id:'SP-47102',s:'اسنپ‌فود',c:'#ff00a6',l:'ا',t:'۱۴۰۴/۰۷/۲۸',a:640000,st:['تسویه شده','ok'],f:'done',paid:'۴ از ۴ قسط'},
-  {id:'SP-46555',s:'تکنولایف',c:'#2d6cdf',l:'ت',t:'۱۴۰۴/۰۷/۰۹',a:21900000,st:['تسویه شده','ok'],f:'done',paid:'۱۲ از ۱۲ قسط'},
-  {id:'SP-46010',s:'دیوار',c:'#a62626',l:'د',t:'۱۴۰۴/۰۶/۱۵',a:1200000,st:['لغو شده','err'],f:'canceled',paid:'—'},
 ];
 
 
@@ -255,19 +248,7 @@ const pages = {
     </div>`;
   },
 
-  orders(f='all'){
-    const chips=[['all','همه'],['active','جاری'],['done','تسویه شده'],['canceled','لغو شده']];
-    const list=ORDERS.filter(o=>f==='all'||o.f===f);
-    return `<div class="page">${appbar('سفارش‌ها')}
-      <div class="chips">${chips.map(c=>`<button class="chip ${c[0]===f?'on':''}" data-filter="${c[0]}">${c[1]}</button>`).join('')}</div>
-      <div class="sec" style="margin-top:14px">
-        ${list.length?list.map(o=>`
-          <a class="card order" href="${link('جزئیات سفارش '+fa(o.id.slice(3)))}">
-            <div class="top">${logo(o)}<div class="t"><b>${o.s}</b><br><small>${o.t} · ${fa(o.id)}</small></div><span class="tag ${o.st[1]}">${o.st[0]}</span></div>
-            <div class="bot"><span>اقساط: <b>${o.paid}</b></span><span>مبلغ: <b>${money(o.a)} تومان</b></span></div>
-          </a>`).join(''):`<div class="empty"><div class="ic">${ic('box')}</div><b>سفارشی نیست</b></div>`}
-      </div></div>`;
-  },
+  orders(){ return ordersPage(); },
 
   profile(){
     return `<div class="page">${appbar('پروفایل')}
@@ -309,17 +290,20 @@ const tabbar = document.getElementById('tabbar');
 const phone = document.getElementById('phone');
 tabbar.innerHTML = TABS.map(t=>`<a class="tab" data-tab="${t.id}" href="#/${t.id}">${ic(t.icon)}<span>${t.label}</span></a>`).join('');
 
-let ordersFilter='all';
 function render(){
   const parts=(location.hash.replace(/^#\/?/,'')||'home').split('/');
   const route=parts[0];
+  closeSheet(true);
   if(route==='p'){
     phone.classList.add('hide-tabs');
     screen.innerHTML=pages.empty(decodeURIComponent(parts.slice(1).join('/')));
+  }else if(route==='order'){
+    phone.classList.add('hide-tabs');
+    screen.innerHTML=orderDetail(parts[1]);
   }else{
     const r=pages[route]?route:'home';
     phone.classList.remove('hide-tabs');
-    screen.innerHTML=pages[r](r==='orders'?ordersFilter:undefined);
+    screen.innerHTML=pages[r]();
     tabbar.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===r));
   }
   screen.scrollTop=0;
@@ -353,9 +337,7 @@ screen.addEventListener('click',e=>{
   const ct=e.target.closest('[data-ctab]'), cm=e.target.closest('[data-cmain]');
   if(ct){catTab=ct.dataset.ctab;catMain=0;render();return}
   if(cm){catMain=+cm.dataset.cmain;render();return}
-  const c=e.target.closest('[data-filter]');
-  if(!c)return;
-  const y=screen.scrollTop; ordersFilter=c.dataset.filter; render(); screen.scrollTop=y;
 });
+phone.addEventListener('click',ordersClick);
 addEventListener('hashchange',render);
 render();
